@@ -22,3 +22,4 @@ sequenceDiagram
     server-->>browser: the JSON data
     deactivate server
     Note right of browser: browser executes javascript which displays notes
+```
