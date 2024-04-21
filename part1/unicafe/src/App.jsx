@@ -14,7 +14,9 @@ const StatDisplay = (props) => (
 const Statistics = (props) => {
       const { good, neutral, bad, total } = props
 
-      return <>
+      return (total === 0) ?
+      <p>No feedback so far</p> :
+      <>
         <StatDisplay name={"good"} value={good}/>
         <StatDisplay name={"neutral"} value={neutral}/>
         <StatDisplay name={"bad"} value={bad}/>
