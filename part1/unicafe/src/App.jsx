@@ -12,10 +12,7 @@ const StatDisplay = (props) => (
 )
 
 const Statistics = (props) => {
-      const good = props.good
-      const neutral = props.neutral
-      const bad = props.bad
-      const total = props.total
+      const { good, neutral, bad, total } = props
 
       return <>
         <StatDisplay name={"good"} value={good}/>
