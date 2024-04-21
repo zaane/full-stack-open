@@ -8,7 +8,10 @@ const Button = (props) => {
 
 
 const StatisticLine = (props) => (
-  <p>{props.text} {props.value}</p>
+  <tr>
+    <td>{props.text}</td> 
+    <td>{props.value}</td>
+  </tr>
 )
 
 const Statistics = (props) => {
@@ -16,14 +19,16 @@ const Statistics = (props) => {
 
       return (total === 0) ?
       <p>No feedback so far</p> :
-      <>
-        <StatisticLine text="good" value={good}/>
-        <StatisticLine text="neutral" value={neutral}/>
-        <StatisticLine text="bad" value={bad}/>
-        <StatisticLine text="all" value={total}/>
-        <StatisticLine text="average" value={total ? Math.round(100 * (good - bad)/total) / 100: ' '} />
-        <StatisticLine text="percent positive" value={total ? `${Math.round(100*good/total)/100}%` : ' '}/>
-      </>
+      <table>
+        <tbody>
+          <StatisticLine text="good" value={good}/>
+          <StatisticLine text="neutral" value={neutral}/>
+          <StatisticLine text="bad" value={bad}/>
+          <StatisticLine text="all" value={total}/>
+          <StatisticLine text="average" value={total ? Math.round(100 * (good - bad)/total) / 100: ' '} />
+          <StatisticLine text="positive" value={total ? `${Math.round(100*good/total)/100}%` : ' '}/>
+        </tbody>
+      </table>
 }
 
 const App = () => {
