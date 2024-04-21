@@ -17,12 +17,12 @@ const Statistics = (props) => {
       return (total === 0) ?
       <p>No feedback so far</p> :
       <>
-        <StatisticLine text={"good"} value={good}/>
-        <StatisticLine text={"neutral"} value={neutral}/>
-        <StatisticLine text={"bad"} value={bad}/>
-        <StatisticLine text={"all"} value={total}/>
-        <StatisticLine text={"average"} value={total ? Math.round(100 * (good - bad)/total) / 100: ' '} />
-        <StatisticLine text={"percent positive"} value={total ? `${Math.round(100*good/total)/100}%` : ' '}/>
+        <StatisticLine text="good" value={good}/>
+        <StatisticLine text="neutral" value={neutral}/>
+        <StatisticLine text="bad" value={bad}/>
+        <StatisticLine text="all" value={total}/>
+        <StatisticLine text="average" value={total ? Math.round(100 * (good - bad)/total) / 100: ' '} />
+        <StatisticLine text="percent positive" value={total ? `${Math.round(100*good/total)/100}%` : ' '}/>
       </>
 }
 
