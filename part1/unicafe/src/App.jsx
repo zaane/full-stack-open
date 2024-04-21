@@ -8,7 +8,7 @@ const Button = (props) => {
 
 
 const StatDisplay = (props) => (
-  <p>{props.rating} {props.count}</p>
+  <p>{props.name} {props.value}</p>
 )
 
 const App = () => {
@@ -16,6 +16,8 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+
+  const total = good + neutral + bad;
 
   const incrementStat = (stat, setStat) => () => setStat(stat + 1)
   
@@ -27,9 +29,13 @@ const App = () => {
       <Button handleClick={incrementStat(bad, setBad)} text={'bad'}/>
 
       <h1>statistics</h1>
-      <StatDisplay rating={"good"} count={good}/>
-      <StatDisplay rating={"neutral"} count={neutral}/>
-      <StatDisplay rating={"bad"} count={bad}/>
+      <StatDisplay name={"good"} value={good}/>
+      <StatDisplay name={"neutral"} value={neutral}/>
+      <StatDisplay name={"bad"} value={bad}/>
+      <StatDisplay name={"all"} value={total}/>
+      <StatDisplay name={"average"} value={total ? Math.round(100 * (good - bad)/total) / 100: ' '} />
+      <StatDisplay name={"percent positive"} value={total ? `${Math.round(100*good/total)/100}%` : ' '}/>
+      
     </div>
   )
 }
