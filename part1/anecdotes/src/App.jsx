@@ -13,16 +13,31 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [voteCounts, setVoteCounts] = useState(Array(anecdotes.length).fill(0))
+ 
 
   const setRandom = () => {
     const newIndex = Math.floor(Math.random() * anecdotes.length)
     setSelected(newIndex)
   }
 
+  const addVote = () => {
+    const newCounts = [...voteCounts]
+    newCounts[selected] += 1
+    setVoteCounts(newCounts)
+  }
+
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
+      <h2>Aphorism for you</h2>
+      {anecdotes[selected]}
+      <br />
+      <button onClick={addVote}>upvote</button>
       <button onClick={setRandom}>next </button>
+
+      <h2>Highest rated aphorism</h2>
+      {anecdotes[voteCounts.indexOf(Math.max(...voteCounts))]}
+
     </div>
   )
 }
