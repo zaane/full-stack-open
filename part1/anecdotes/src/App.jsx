@@ -11,10 +11,10 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
-   
+
   const [selected, setSelected] = useState(0)
   const [voteCounts, setVoteCounts] = useState(Array(anecdotes.length).fill(0))
- 
+
 
   const setRandom = () => {
     const newIndex = Math.floor(Math.random() * anecdotes.length)
@@ -37,6 +37,8 @@ const App = () => {
 
       <h2>Highest rated aphorism</h2>
       {anecdotes[voteCounts.indexOf(Math.max(...voteCounts))]}
+      <br />
+      {Math.max(...voteCounts)} vote(s)
 
     </div>
   )
