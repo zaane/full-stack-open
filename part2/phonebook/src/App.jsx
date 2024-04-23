@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 
 const Filter = (props) => {
   return <div>
@@ -58,25 +59,19 @@ const App = () => {
       number: '555-555-5555',
       id: 1
     },
-    {
-      name: 'Barto Bellas',
-      number: '555-555-5555',
-      id: 2
-    },
-    {
-      name: 'Darto Dellas',
-      number: '555-555-5555',
-      id: 3
-    },
-    {
-      name: 'Farto Fellas',
-      number: '555-555-5555',
-      id: 4
-    }
   ])
+
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+      })
+  }, [])
 
   const addContact = (event) => {
     event.preventDefault()
