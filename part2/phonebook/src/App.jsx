@@ -1,5 +1,15 @@
 import { useState } from 'react'
 
+const Filter = (props) => {
+  return <div>
+    filter contacts by
+    <input
+      value={props.filter}
+      onChange={props.onChange}
+    />
+  </div>
+}
+
 const Contact = (props) => {
   return <div>{props.name} {props.number}</div>
 }
@@ -64,13 +74,15 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
+      {/* <div>
         filter contacts by
         <input
           value={filter}
           onChange={handleFilterChange}
         />
-      </div>
+      </div> */}
+      <Filter filter={filter} onChange={handleFilterChange} />
+      
       <h2>Save New Contact</h2>
       <form>
         <div>
