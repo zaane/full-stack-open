@@ -34,6 +34,19 @@ const ContactForm = (props) => {
   </form>
 }
 
+const Contacts = (props) => {
+  return <div>
+    {
+      props.persons.map(person =>
+        <Contact
+          key={person.id}
+          name={person.name}
+          number={person.number}
+        />)
+    }
+  </div>
+}
+
 const Contact = (props) => {
   return <div>{props.name} {props.number}</div>
 }
@@ -102,7 +115,7 @@ const App = () => {
 
       <h2>Save New Contact</h2>
 
-      <ContactForm 
+      <ContactForm
         newName={newName}
         handleNameChange={handleNameChange}
         newNumber={newNumber}
@@ -111,12 +124,14 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      {personsToShow.map(person =>
+
+      <Contacts persons={personsToShow} />
+      {/* {personsToShow.map(person =>
         <Contact
           key={person.id}
           name={person.name}
           number={person.number}
-        />)}
+        />)} */}
     </div>
   )
 }
