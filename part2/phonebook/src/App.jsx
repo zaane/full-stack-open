@@ -10,6 +10,30 @@ const Filter = (props) => {
   </div>
 }
 
+const ContactForm = (props) => {
+  return <form>
+    <div>
+      name: <input
+        value={props.newName}
+        onChange={props.handleNameChange}
+      />
+    </div>
+    <div>
+      number: <input
+        value={props.newNumber}
+        onChange={props.handleNumberChange}
+      />
+    </div>
+    <div>
+      <button
+        onClick={props.addContact}
+        type="submit">
+        add
+      </button>
+    </div>
+  </form>
+}
+
 const Contact = (props) => {
   return <div>{props.name} {props.number}</div>
 }
@@ -74,37 +98,18 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      {/* <div>
-        filter contacts by
-        <input
-          value={filter}
-          onChange={handleFilterChange}
-        />
-      </div> */}
       <Filter filter={filter} onChange={handleFilterChange} />
-      
+
       <h2>Save New Contact</h2>
-      <form>
-        <div>
-          name: <input
-            value={newName}
-            onChange={handleNameChange}
-          />
-        </div>
-        <div>
-          number: <input
-            value={newNumber}
-            onChange={handleNumberChange}
-          />
-        </div>
-        <div>
-          <button
-            onClick={addContact}
-            type="submit">
-            add
-          </button>
-        </div>
-      </form>
+
+      <ContactForm 
+        newName={newName}
+        handleNameChange={handleNameChange}
+        newNumber={newNumber}
+        handleNumberChange={handleNumberChange}
+        addContact={addContact}
+      />
+
       <h2>Numbers</h2>
       {personsToShow.map(person =>
         <Contact
