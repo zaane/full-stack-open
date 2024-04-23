@@ -1,17 +1,30 @@
 import { useState } from 'react'
 
 const Contact = (props) => {
-  return <div>{props.name}</div>
+  return <div>{props.name} {props.number}</div>
 }
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' },
-    { name: 'Barto Bellas' },
-    { name: 'Darto Dellas' },
-    { name: 'Farto Fellas' }
+    {
+      name: 'Arto Hellas',
+      number: '555-555-5555'
+    },
+    {
+      name: 'Barto Bellas',
+      number: '555-555-5555'
+    },
+    {
+      name: 'Darto Dellas',
+      number: '555-555-5555'
+    },
+    {
+      name: 'Farto Fellas',
+      number: '555-555-5555'
+    }
   ])
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
   const addContact = (event) => {
     event.preventDefault()
@@ -19,14 +32,19 @@ const App = () => {
     if (persons.map(person => person.name).includes(newName)) {
       alert(`${newName} is already in the phonebook!`)
     } else {
-      const newPerson = { name: newName }
+      const newPerson = { name: newName, number: newNumber }
       setPersons(persons.concat(newPerson))
     }
     setNewName('')
+    setNewNumber('')
   }
 
-  const handleInputChange = (event) => {
+  const handleNameChange = (event) => {
     setNewName(event.target.value)
+  }
+
+  const handleNumberChange = (event) => {
+    setNewNumber(event.target.value)
   }
 
   return (
@@ -36,7 +54,13 @@ const App = () => {
         <div>
           name: <input
             value={newName}
-            onChange={handleInputChange}
+            onChange={handleNameChange}
+          />
+        </div>
+        <div>
+          number: <input
+            value={newNumber}
+            onChange={handleNumberChange}
           />
         </div>
         <div>
@@ -48,7 +72,12 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map(person => <Contact key={person.name} name={person.name} />)}
+      {persons.map(person =>
+        <Contact
+          key={person.name}
+          name={person.name}
+          number={person.number}
+        />)}
     </div>
   )
 }
