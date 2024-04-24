@@ -43,13 +43,23 @@ const Contacts = (props) => {
           key={person.id}
           name={person.name}
           number={person.number}
+          onDelete={() => {
+            console.log(`delete ${person.id} called`); //TODO: display confirm message for deleting
+            props.onDelete(person.id)
+          }}
         />)
     }
+
   </div>
 }
 
 const Contact = (props) => {
-  return <div>{props.name} {props.number}</div>
+  return <div>
+    {props.name} {props.number}
+    <button onClick={props.onDelete}>
+      Delete contact
+    </button>
+  </div>
 }
 
 const App = () => {
@@ -77,13 +87,22 @@ const App = () => {
     if (persons.map(person => person.name).includes(newName)) {
       alert(`${newName} is already in the phonebook!`)
     } else {
-      const newPerson = { name: newName, number: newNumber, id: (persons.length + 1).toString() }
+      const newPerson = { name: newName, number: newNumber }
       contactService
         .create(newPerson)
         .then(response => setPersons(persons.concat(response)))
     }
     setNewName('')
     setNewNumber('')
+  }
+
+  const deleteContact = id => {
+    console.log(persons);
+    console.log(persons.filter(person => person.id !== id));
+    contactService
+      .deleteContact(id)
+      .then(() => setPersons(persons.filter(person => person.id !== id)))
+
   }
 
   const handleFilterChange = (event) => {
@@ -120,7 +139,7 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Contacts persons={personsToShow} />
+      <Contacts persons={personsToShow} onDelete={deleteContact} />
       {/* {personsToShow.map(person =>
         <Contact
           key={person.id}
