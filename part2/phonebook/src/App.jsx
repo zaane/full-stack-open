@@ -84,17 +84,29 @@ const App = () => {
 
   const addContact = (event) => {
     event.preventDefault()
+    const newPerson = { name: newName, number: newNumber }
 
     if (persons.map(person => person.name).includes(newName)) {
-      alert(`${newName} is already in the phonebook!`)
+      if (window.confirm(`${newName} is already in the phonebook. Do you want to update their number to ${newNumber}?`)) {
+        const personToUpdate = persons.find(person => person.name === newName)
+        updateContact(personToUpdate.id, newPerson)
+      }
+
     } else {
-      const newPerson = { name: newName, number: newNumber }
       contactService
         .create(newPerson)
         .then(response => setPersons(persons.concat(response)))
     }
     setNewName('')
     setNewNumber('')
+  }
+
+  const updateContact = (id, newContact) => {
+    contactService
+      .update(id, newContact)
+      .then(response => {
+        setPersons(persons.map(person => person.id === id ? response : person))
+      })
   }
 
   const deleteContact = id => {
