@@ -44,8 +44,9 @@ const Contacts = (props) => {
           name={person.name}
           number={person.number}
           onDelete={() => {
-            console.log(`delete ${person.id} called`); //TODO: display confirm message for deleting
-            props.onDelete(person.id)
+            if (window.confirm(`Are you sure you want to delete ${person.name}?`)) {
+              props.onDelete(person.id)
+            }
           }}
         />)
     }
@@ -97,12 +98,9 @@ const App = () => {
   }
 
   const deleteContact = id => {
-    console.log(persons);
-    console.log(persons.filter(person => person.id !== id));
     contactService
       .deleteContact(id)
       .then(() => setPersons(persons.filter(person => person.id !== id)))
-
   }
 
   const handleFilterChange = (event) => {
