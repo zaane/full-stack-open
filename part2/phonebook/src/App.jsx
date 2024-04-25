@@ -63,9 +63,9 @@ const Contact = (props) => {
   </div>
 }
 
-const Notification = ({ message }) => {
+const Notification = ({ message, type }) => {
   const successStyle = {
-    color: 'green',
+    color: type === 'success' ? 'green' : 'red',
     background: 'lightgrey',
     fontSize: 20,
     width: 'fit-content',
@@ -100,7 +100,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-  const [notificationMessage, setNotificationMessage] = useState('test notification')
+  const [notificationMessage, setNotificationMessage] = useState({message: 'test notification', type: 'success'})
 
   useEffect(() => {
     contactService
@@ -122,9 +122,7 @@ const App = () => {
       contactService
         .create(newPerson)
         .then(response => {
-          setNotificationMessage(
-            `${newPerson.name} was successfully added to the phonebook!`
-          )
+          setNotificationMessage({message: 'add successful', type: 'success'})
           setTimeout(() => setNotificationMessage(null), 5000)
           setPersons(persons.concat(response))
         })
@@ -138,11 +136,12 @@ const App = () => {
     contactService
       .update(id, newContact)
       .then(response => {
-        setNotificationMessage(
-          `${newContact.name}'s number was successfully updated to ${newContact.number}.`
-        )
+        setNotificationMessage({message: 'update successful', type: 'success'})
         setTimeout(() => setNotificationMessage(null), 5000)
         setPersons(persons.map(person => person.id === id ? response : person))
+      })
+      .catch(error => {
+
       })
   }
 
@@ -172,7 +171,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage} />
+      
+      {notificationMessage 
+      ? <Notification message={notificationMessage.message} type={notificationMessage.type}/>
+      : null}
 
       <Filter filter={filter} onChange={handleFilterChange} />
 
@@ -189,12 +191,6 @@ const App = () => {
       <h2>Numbers</h2>
 
       <Contacts persons={personsToShow} onDelete={deleteContact} />
-      {/* {personsToShow.map(person =>
-        <Contact
-          key={person.id}
-          name={person.name}
-          number={person.number}
-        />)} */}
     </div>
   )
 }
