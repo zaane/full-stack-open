@@ -141,7 +141,7 @@ const App = () => {
         setPersons(persons.map(person => person.id === id ? response : person))
       })
       .catch(error => {
-
+        setNotificationMessage({message: `${newContact.name} has already been deleted from the server.`, type: 'failure'})
       })
   }
 
@@ -171,7 +171,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      
+
       {notificationMessage 
       ? <Notification message={notificationMessage.message} type={notificationMessage.type}/>
       : null}
