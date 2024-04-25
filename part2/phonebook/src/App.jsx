@@ -63,6 +63,31 @@ const Contact = (props) => {
   </div>
 }
 
+const Notification = ({ message }) => {
+  const successStyle = {
+    color: 'green',
+    background: 'lightgrey',
+    fontSize: 20,
+    width: 'fit-content',
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+  //TODO: make error and update styles
+
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div style={successStyle}>
+      {message}
+    </div>
+  )
+
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     {
@@ -75,6 +100,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState('test notification')
 
   useEffect(() => {
     contactService
@@ -95,7 +121,14 @@ const App = () => {
     } else {
       contactService
         .create(newPerson)
-        .then(response => setPersons(persons.concat(response)))
+        .then(response => {
+          setNotificationMessage(
+            `${newPerson.name} was successfully added to the phonebook!`
+          )
+          setTimeout(() => setNotificationMessage(null), 5000)
+          setPersons(persons.concat(response))
+        })
+
     }
     setNewName('')
     setNewNumber('')
@@ -105,6 +138,10 @@ const App = () => {
     contactService
       .update(id, newContact)
       .then(response => {
+        setNotificationMessage(
+          `${newContact.name}'s number was successfully updated to ${newContact.number}.`
+        )
+        setTimeout(() => setNotificationMessage(null), 5000)
         setPersons(persons.map(person => person.id === id ? response : person))
       })
   }
@@ -135,6 +172,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
+
       <Filter filter={filter} onChange={handleFilterChange} />
 
       <h2>Save New Contact</h2>
