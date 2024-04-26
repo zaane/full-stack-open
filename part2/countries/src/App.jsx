@@ -11,7 +11,7 @@ const SearchBox = ({ query, onChange }) => {
   </div>
 }
 
-const SearchResult = (countryName) => {
+const SearchResult = ({ countryName }) => {
   return (
     <div>
       {countryName}
@@ -25,7 +25,9 @@ function App() {
 
   useEffect(() => {
     getAllCountries('https://studies.cs.helsinki.fi/restcountries/api')
-      .then(loadedNames => setCountries(loadedNames))
+      .then(loadedCountries => setCountries(loadedCountries))
+
+      console.log('effect called');
   }, [])
 
   const getAllCountries = (baseUrl) => {
@@ -38,7 +40,7 @@ function App() {
   }
 
   const searchResults = query 
-    ? countryNames.filter(name => 
+    ? countries.map(country => country.name.common).filter(name => 
       name.toLowerCase().includes(query.toLowerCase()))
     : []
 
@@ -46,7 +48,7 @@ function App() {
     <>
       <SearchBox query={query} onChange={handleSearchChange} />
       <div>
-        {searchResults.map(name => <SearchResult key={name} countryName={name} />)}
+        {searchResults.slice(0,10).map(name => <SearchResult key={name} countryName={name} />)}
       </div>
     </>
   )
