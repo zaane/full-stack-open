@@ -36,10 +36,10 @@ const SearchResults = ({ searchResults, onClickShow }) => {
   )
 }
 
-const CountryInfo = ({ country }) => {
+const CountryInfo = ({ country, onClose }) => {
   return (
     <div>
-      <h2>{country.name.common}</h2>
+      <h2>{country.name.common} <button onClick={onClose}>close</button></h2>
       <div>capital: {country.capital}</div>
       <div>area: {country.area} km^2</div>
 
@@ -101,7 +101,7 @@ function App() {
     <>
       <SearchBox query={query} onChange={handleSearchChange} />
       {Object.keys(countryToShow).length
-        ? <CountryInfo country={countryToShow} />
+        ? <CountryInfo country={countryToShow} onClose={() => setCountryToShow({})}/>
         : <SearchResults searchResults={searchResults} onClickShow={handleShowInfo} />
       }
     </>
