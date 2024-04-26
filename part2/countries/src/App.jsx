@@ -19,6 +19,16 @@ const SearchResult = ({ countryName }) => {
   )
 }
 
+const SearchResults = ({ searchResults }) => {
+  const topResults = searchResults.slice(0,10)
+
+  return (
+    <div>
+      {topResults.map(name => <SearchResult key={name} countryName={name} />)}
+    </div>
+  )
+}
+
 function App() {
   const [countries, setCountries] = useState([])
   const [query, setQuery] = useState('')
@@ -47,9 +57,10 @@ function App() {
   return (
     <>
       <SearchBox query={query} onChange={handleSearchChange} />
-      <div>
+      {/* <div>
         {searchResults.slice(0,10).map(name => <SearchResult key={name} countryName={name} />)}
-      </div>
+      </div> */}
+      <SearchResults searchResults={searchResults} />
     </>
   )
 }
