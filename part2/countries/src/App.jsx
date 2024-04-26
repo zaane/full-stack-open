@@ -11,10 +11,21 @@ const SearchBox = ({ query, onChange }) => {
   </div>
 }
 
-const SearchResult = ({ countryName }) => {
+const SearchResult = ({ countryName, onClickShow }) => {
   return (
     <div>
       {countryName}
+      <button onClick={() => onClickShow(countryName)}>show</button>
+    </div>
+  )
+}
+
+const SearchResults = ({ searchResults, onClickShow }) => {
+  const topResults = searchResults.slice(0, 10)
+
+  return (
+    <div>
+      {topResults.map(name => <SearchResult key={name} countryName={name} onClickShow={onClickShow} />)}
     </div>
   )
 }
@@ -28,7 +39,7 @@ const CountryInfo = ({ country }) => {
 
       <h3>languages:</h3>
       <ul>
-        {Object.values(country.languages).map(language => <li>{language}</li>)}
+        {Object.values(country.languages).map(language => <li key={language}>{language}</li>)}
       </ul>
       <img src={country.flags.png} />
       {console.log(country)}
@@ -36,19 +47,11 @@ const CountryInfo = ({ country }) => {
   )
 }
 
-const SearchResults = ({ searchResults }) => {
-  const topResults = searchResults.slice(0, 10)
-
-  return (
-    <div>
-      {topResults.map(name => <SearchResult key={name} countryName={name} />)}
-    </div>
-  )
-}
 
 function App() {
   const [countries, setCountries] = useState([])
   const [query, setQuery] = useState('')
+  const [countryToShow, setCountryToShow] = useState({})
 
   useEffect(() => {
     getAllCountries('https://studies.cs.helsinki.fi/restcountries/api')
@@ -56,6 +59,7 @@ function App() {
 
     console.log('effect called');
   }, [])
+
 
   const getAllCountries = (baseUrl) => {
     const request = axios.get(`${baseUrl}/all`)
@@ -71,18 +75,29 @@ function App() {
       name.toLowerCase().includes(query.toLowerCase()))
     : []
 
+  useEffect(() => {
+    if (searchResults.length === 1) {
+      setCountryToShow(getCountryByName(searchResults[0]))
+    } else if (Object.keys(countryToShow).length) {
+      setCountryToShow({})
+    }
+  }, [query])
+
+  const handleShowInfo = (countryName) => {
+    setCountryToShow(countries.find(country => country.name.common === countryName))
+  }
+
+  const getCountryByName = (countryName) => {
+    return countries.find(country => country.name.common === countryName)
+  }
+
   return (
     <>
       <SearchBox query={query} onChange={handleSearchChange} />
-      {
-        searchResults.length === 1
-          ? <CountryInfo country={
-            countries.find(country => country.name.common === searchResults[0])
-          } />
-          : <SearchResults searchResults={searchResults} />
+      {Object.keys(countryToShow).length
+        ? <CountryInfo country={getCountryByName(searchResults[0])} />
+        : <SearchResults searchResults={searchResults} onClickShow={handleShowInfo} />
       }
-
-
     </>
   )
 }
