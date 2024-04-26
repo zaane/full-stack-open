@@ -11,48 +11,43 @@ const SearchBox = ({ query, onChange }) => {
   </div>
 }
 
-const Result = () => {
+const SearchResult = (countryName) => {
   return (
-    <>
-      result
-    </>
+    <div>
+      {countryName}
+    </div>
   )
 }
 
 function App() {
-  const [countryNames, setCountryNames] = useState('')
+  const [countries, setCountries] = useState([])
   const [query, setQuery] = useState('')
 
   useEffect(() => {
-    getAllCountryNames('https://studies.cs.helsinki.fi/restcountries/api')
-      .then(loadedNames => setCountryNames(loadedNames))
-    console.log('effect called')
+    getAllCountries('https://studies.cs.helsinki.fi/restcountries/api')
+      .then(loadedNames => setCountries(loadedNames))
   }, [])
 
-  const getAllCountryNames = (baseUrl) => {
+  const getAllCountries = (baseUrl) => {
     const request = axios.get(`${baseUrl}/all`)
-    return request.then(response => response.data.map(country => country.name.common))
+    return request.then(response => response.data)
   }
-
-
-  const getCountryByName = (baseUrl, name) => {
-    const request = axios.get(`${baseUrl}/name/${name}`)
-    return request.then(response => {
-      console.log(response.data)
-    })
-  }
-
-  // getCountryByName('https://studies.cs.helsinki.fi/restcountries/api', 'kuwait')
-
-
 
   const handleSearchChange = (event) => {
     setQuery(event.target.value)
   }
 
+  const searchResults = query 
+    ? countryNames.filter(name => 
+      name.toLowerCase().includes(query.toLowerCase()))
+    : []
+
   return (
     <>
       <SearchBox query={query} onChange={handleSearchChange} />
+      <div>
+        {searchResults.map(name => <SearchResult key={name} countryName={name} />)}
+      </div>
     </>
   )
 }
