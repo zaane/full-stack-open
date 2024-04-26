@@ -1,35 +1,39 @@
 import axios from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const SearchBox = ({ query, onChange }) => {
   return <div>
-    find country: 
-    <input 
-    value={query}
-    onChange={onChange}
-     />
+    find country:
+    <input
+      value={query}
+      onChange={onChange}
+    />
   </div>
 }
 
 const Result = () => {
   return (
     <>
-    result
+      result
     </>
   )
 }
 
 function App() {
-  const [countries, setCountries] = useState('')
+  const [countryNames, setCountryNames] = useState('')
   const [query, setQuery] = useState('')
+
+  useEffect(() => {
+    getAllCountryNames('https://studies.cs.helsinki.fi/restcountries/api')
+      .then(loadedNames => setCountryNames(loadedNames))
+    console.log('effect called')
+  }, [])
 
   const getAllCountryNames = (baseUrl) => {
     const request = axios.get(`${baseUrl}/all`)
-    return request.then(response => {
-      console.log(response.data.map(datum => datum.name.common))})
+    return request.then(response => response.data.map(country => country.name.common))
   }
 
-  getAllCountryNames('https://studies.cs.helsinki.fi/restcountries/api')
 
   const getCountryByName = (baseUrl, name) => {
     const request = axios.get(`${baseUrl}/name/${name}`)
@@ -38,7 +42,7 @@ function App() {
     })
   }
 
-  getCountryByName('https://studies.cs.helsinki.fi/restcountries/api', 'kuwait')
+  // getCountryByName('https://studies.cs.helsinki.fi/restcountries/api', 'kuwait')
 
 
 
@@ -48,7 +52,7 @@ function App() {
 
   return (
     <>
-    <SearchBox query={query} onChange={handleSearchChange} />
+      <SearchBox query={query} onChange={handleSearchChange} />
     </>
   )
 }
