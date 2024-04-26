@@ -12,10 +12,11 @@ const SearchBox = ({ query, onChange }) => {
 }
 
 const SearchResult = ({ countryName, onClickShow }) => {
+  console.log(countryName);
   return (
     <div>
       {countryName}
-      <button onClick={() => onClickShow(countryName)}>show</button>
+      <button onClick={onClickShow}>show</button>
     </div>
   )
 }
@@ -25,7 +26,12 @@ const SearchResults = ({ searchResults, onClickShow }) => {
 
   return (
     <div>
-      {topResults.map(name => <SearchResult key={name} countryName={name} onClickShow={onClickShow} />)}
+      {topResults.map(name =>
+        <SearchResult
+          key={name}
+          countryName={name}
+          onClickShow={() => onClickShow(name)}
+        />)}
     </div>
   )
 }
@@ -42,7 +48,6 @@ const CountryInfo = ({ country }) => {
         {Object.values(country.languages).map(language => <li key={language}>{language}</li>)}
       </ul>
       <img src={country.flags.png} />
-      {console.log(country)}
     </div>
   )
 }
@@ -84,7 +89,8 @@ function App() {
   }, [query])
 
   const handleShowInfo = (countryName) => {
-    setCountryToShow(countries.find(country => country.name.common === countryName))
+    console.log(`showing ${countryName}`);
+    setCountryToShow(getCountryByName(countryName))
   }
 
   const getCountryByName = (countryName) => {
@@ -95,7 +101,7 @@ function App() {
     <>
       <SearchBox query={query} onChange={handleSearchChange} />
       {Object.keys(countryToShow).length
-        ? <CountryInfo country={getCountryByName(searchResults[0])} />
+        ? <CountryInfo country={countryToShow} />
         : <SearchResults searchResults={searchResults} onClickShow={handleShowInfo} />
       }
     </>
