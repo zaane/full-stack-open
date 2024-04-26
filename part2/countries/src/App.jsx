@@ -19,8 +19,16 @@ const SearchResult = ({ countryName }) => {
   )
 }
 
+const CountryInfo = ({ country }) => {
+  return (
+    <div>
+      {console.log(country)}
+    </div>
+  )
+}
+
 const SearchResults = ({ searchResults }) => {
-  const topResults = searchResults.slice(0,10)
+  const topResults = searchResults.slice(0, 10)
 
   return (
     <div>
@@ -37,7 +45,7 @@ function App() {
     getAllCountries('https://studies.cs.helsinki.fi/restcountries/api')
       .then(loadedCountries => setCountries(loadedCountries))
 
-      console.log('effect called');
+    console.log('effect called');
   }, [])
 
   const getAllCountries = (baseUrl) => {
@@ -49,18 +57,23 @@ function App() {
     setQuery(event.target.value)
   }
 
-  const searchResults = query 
-    ? countries.map(country => country.name.common).filter(name => 
+  const searchResults = query
+    ? countries.map(country => country.name.common).filter(name =>
       name.toLowerCase().includes(query.toLowerCase()))
     : []
 
   return (
     <>
       <SearchBox query={query} onChange={handleSearchChange} />
-      {/* <div>
-        {searchResults.slice(0,10).map(name => <SearchResult key={name} countryName={name} />)}
-      </div> */}
-      <SearchResults searchResults={searchResults} />
+      {
+        searchResults.length === 1
+          ? <CountryInfo country={
+            countries.find(country => country.name.common === searchResults[0])
+          } />
+          : <SearchResults searchResults={searchResults} />
+      }
+
+
     </>
   )
 }
