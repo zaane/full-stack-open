@@ -23,8 +23,8 @@ const CountryInfo = ({ country }) => {
   return (
     <div>
       <h2>{country.name.common}</h2>
-      <div>capital {country.capital}</div>
-      <div>area {country.area} km^2</div>
+      <div>capital: {country.capital}</div>
+      <div>area: {country.area} km^2</div>
 
       <h3>languages:</h3>
       <ul>
