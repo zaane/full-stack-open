@@ -84,7 +84,7 @@ const WeatherInfo = ({ country }) => {
 function App() {
   const [countries, setCountries] = useState([])
   const [query, setQuery] = useState('')
-  const [countryToShow, setCountryToShow] = useState({})
+  const [countryToShow, setCountryToShow] = useState(null)
 
   useEffect(() => {
     countryService
@@ -104,8 +104,8 @@ function App() {
   useEffect(() => {
     if (searchResults.length === 1) {
       setCountryToShow(getCountryByName(searchResults[0]))
-    } else if (Object.keys(countryToShow).length) {
-      setCountryToShow({})
+    } else if (countryToShow) {
+      setCountryToShow(null)
     }
   }, [query])
 
@@ -121,8 +121,8 @@ function App() {
   return (
     <>
       <SearchBox query={query} onChange={handleSearchChange} />
-      {Object.keys(countryToShow).length
-        ? <CountryInfo country={countryToShow} onClose={() => setCountryToShow({})} />
+      {countryToShow 
+        ? <CountryInfo country={countryToShow} onClose={() => setCountryToShow(null)} />
         : <SearchResults searchResults={searchResults} onClickShow={handleShowInfo} />
       }
     </>
