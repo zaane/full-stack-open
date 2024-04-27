@@ -1,6 +1,6 @@
-import axios from 'axios'
 import { useEffect, useState } from 'react'
 import countryService from './services/countries'
+import weatherService from './services/weather'
 
 
 const SearchBox = ({ query, onChange }) => {
@@ -14,7 +14,6 @@ const SearchBox = ({ query, onChange }) => {
 }
 
 const SearchResult = ({ countryName, onClickShow }) => {
-  console.log(countryName);
   return (
     <div>
       {countryName}
@@ -50,21 +49,34 @@ const CountryInfo = ({ country, onClose }) => {
         {Object.values(country.languages).map(language => <li key={language}>{language}</li>)}
       </ul>
       <img src={country.flags.png} />
-      <WeatherInfo />
+      <WeatherInfo country={country} />
     </div>
   )
 }
 
 const WeatherInfo = ({ country }) => {
-  const api_key = import.meta.env.VITE_SOME_KEY
-  const getWeatherInfo = () => {
-    axios
-      .get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}`)
-      .then(response => response.data)
+  const [info, setInfo] = useState(null)
+  const lat = country.capitalInfo.latlng[0]
+  const long = country.capitalInfo.latlng[1]
+
+  useEffect(() => {
+    weatherService
+      .getWeatherInfo(lat, long)
+      .then(info => setInfo(info))
+  }, [])
+
+  if (!info) {
+    return null
   }
 
   return <div>
-    weather will go here
+    <div>temperature: {info.main.temp}°C </div>
+    <div>
+      <img src={`https://openweathermap.org/img/wn/${info.weather[0].icon}@2x.png`} />
+      {info.weather[0].description}
+    </div>
+    <br />
+    <div>wind speed: {info.wind.speed} km/h</div>
   </div>
 }
 
