@@ -70,7 +70,7 @@ const WeatherInfo = ({ country }) => {
   }
 
   return <div>
-    <div>temperature: {info.main.temp}°C </div>
+    <div>temperature in {country.capital}: {info.main.temp}°C </div>
     <div>
       <img src={`https://openweathermap.org/img/wn/${info.weather[0].icon}@2x.png`} />
       {info.weather[0].description}
@@ -110,7 +110,6 @@ function App() {
   }, [query])
 
   const handleShowInfo = (countryName) => {
-    console.log(`showing ${countryName}`);
     setCountryToShow(getCountryByName(countryName))
   }
 
