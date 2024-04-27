@@ -100,7 +100,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-  const [notificationMessage, setNotificationMessage] = useState({message: 'test notification', type: 'success'})
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
     contactService
