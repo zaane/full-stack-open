@@ -70,7 +70,8 @@ const WeatherInfo = ({ country }) => {
   }
 
   return <div>
-    <div>temperature in {country.capital}: {info.main.temp}°C </div>
+    <h2>Weather in {country.capital}</h2>
+    <div>temperature: {info.main.temp}°C </div>
     <div>
       <img src={`https://openweathermap.org/img/wn/${info.weather[0].icon}@2x.png`} />
       {info.weather[0].description}
