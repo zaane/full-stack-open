@@ -32,7 +32,7 @@ test('all posts have unique identifier named id', async () => {
     assert(keyLists.every(keyList => keyList.includes('id')))
 })
 
-test.only('a valid post can be added', async () => {
+test('a valid post can be added', async () => {
     const newBlog = {
         title: 'my test blog post',
         author: 'me',
@@ -52,6 +52,25 @@ test.only('a valid post can be added', async () => {
 
     assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
     assert(titles.includes('my test blog post'))
+})
+
+test('blank likes field defaults to 0', async () => {
+    const newBlog = {
+        title: 'this blog has no likes',
+        author: 'me',
+        url: 'http://noId.url.com'
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+
+    const response = await api.get('/api/blogs')
+
+    const savedBlog = response.body.find(blog => blog.title === 'this blog has no likes')
+
+    assert.strictEqual(savedBlog.likes, 0)
+
 })
 
 after(async () => {
