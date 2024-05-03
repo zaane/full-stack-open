@@ -54,11 +54,11 @@ test('a valid post can be added', async () => {
     assert(titles.includes('my test blog post'))
 })
 
-test('blank likes field defaults to 0', async () => {
+test('empty likes field defaults to 0', async () => {
     const newBlog = {
         title: 'this blog has no likes',
         author: 'me',
-        url: 'http://noId.url.com'
+        url: 'http://noLikes.url.com'
     }
 
     await api
@@ -70,7 +70,32 @@ test('blank likes field defaults to 0', async () => {
     const savedBlog = response.body.find(blog => blog.title === 'this blog has no likes')
 
     assert.strictEqual(savedBlog.likes, 0)
+})
 
+test.only('empty title field throws 400', async () => {
+    const newBlog = {
+        author: 'me',
+        url: 'http://noTitle.url.com',
+        likes: 5
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+})
+
+test.only('empty url field throws 400', async () => {
+    const newBlog = {
+        title: 'this blog has no url',
+        author: 'me',
+        likes: 5
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
 })
 
 after(async () => {

@@ -7,9 +7,23 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
-    const blog = new Blog(request.body)
+    const blogRequest = request.body
 
-    const savedBlog = await blog.save()
+    if (!blogRequest.title) {
+        return response.status(400).json({
+            error: 'title field empty'
+        })
+    }
+
+    if (!blogRequest.url) {
+        return response.status(400).json({
+            error: 'url field empty'
+        })
+    }
+
+    const newBlog = new Blog(blogRequest)
+
+    const savedBlog = await newBlog.save()
     response.status(201).json(savedBlog)
 })
 
