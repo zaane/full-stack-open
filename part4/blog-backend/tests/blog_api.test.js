@@ -8,7 +8,7 @@ const api = supertest(app)
 
 const Blog = require('../models/blog')
 
-describe.only('when there are blogs in database', () => {
+describe('when there are blogs in database', () => {
     beforeEach(async () => {
         await Blog.deleteMany({})
         await Blog.insertMany(helper.initialBlogs)
@@ -99,20 +99,40 @@ describe.only('when there are blogs in database', () => {
         })
     })
 
-    test.only('a blog can be deleted', async () => {
-        const blogsBeforeDelete = await helper.blogsInDatabase()
-        const blogToDelete = blogsBeforeDelete[0]
+    describe('when trying to change the database', () => {
+        test('a blog can be deleted', async () => {
+            const blogsBeforeDelete = await helper.blogsInDatabase()
+            const blogToDelete = blogsBeforeDelete[0]
 
-        await api
-            .delete(`/api/blogs/${blogToDelete.id}`)
-            .expect(204)
+            await api
+                .delete(`/api/blogs/${blogToDelete.id}`)
+                .expect(204)
 
-        const blogsAfterDelete = await helper.blogsInDatabase()
-        assert.strictEqual(blogsAfterDelete.length, blogsBeforeDelete.length - 1)
+            const blogsAfterDelete = await helper.blogsInDatabase()
+            assert.strictEqual(blogsAfterDelete.length, blogsBeforeDelete.length - 1)
 
-        const titles = blogsAfterDelete.map(blog => blog.title)
-        assert(!titles.includes(blogToDelete.title))
+            const titles = blogsAfterDelete.map(blog => blog.title)
+            assert(!titles.includes(blogToDelete.title))
+        })
+
+        test('a blog can be updated', async () => {
+            const blogsBeforeUpdate = await helper.blogsInDatabase()
+            const blogToUpdate = blogsBeforeUpdate[0]
+            const updatedBlog = {...blogToUpdate, likes: 42}
+
+            await api
+                .put(`/api/blogs/${blogToUpdate.id}`)
+                .send(updatedBlog)
+
+            const blogsAfterUpdate = await helper.blogsInDatabase()
+            assert.strictEqual(blogsAfterUpdate.length, blogsBeforeUpdate.length)
+
+            const supposedToBeUpdated = blogsAfterUpdate.find(blog => blog.title === blogToUpdate.title)
+            assert.strictEqual(supposedToBeUpdated.likes, 42)
+        })
     })
+
+
 })
 
 after(async () => {
