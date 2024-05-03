@@ -26,8 +26,14 @@ test('blogs are returned as json', async () => {
 
 test('correct number of notes returned', async () => {
     const response = await api.get('/api/blogs')
-    
     assert.strictEqual(response.body.length, 2)
+})
+
+test('all posts have unique identifier named id', async () => {
+    const response = await api.get('/api/blogs')
+    const keyLists = response.body.map(blog => Object.keys(blog))
+    
+    assert(keyLists.every(keyList => keyList.includes('id')))
 })
 
 after(async () => {
