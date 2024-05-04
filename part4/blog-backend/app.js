@@ -1,6 +1,7 @@
 const logger = require('./utils/logger')
 const config = require('./utils/config')
 const express = require('express')
+require('express-async-errors')
 const app = express()
 const blogsRouter = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
@@ -28,6 +29,7 @@ if (process.env.NODE_ENV !== 'test') {
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 
-//TODO: use unknown endpoint and error handler middleware
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
 
 module.exports = app
