@@ -22,6 +22,7 @@ mongoose.connect(mongoUrl)
 
 app.use(cors())
 app.use(express.json())
+app.use(middleware.tokenExtractor)
 
 if (process.env.NODE_ENV !== 'test') {
     app.use(middleware.requestLogger)
