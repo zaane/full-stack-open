@@ -1,4 +1,5 @@
 const logger = require('./logger')
+const jwt = require('jsonwebtoken')
 const morgan = require('morgan')
 const { inspect } = require('node:util');
 
@@ -11,6 +12,19 @@ const tokenExtractor = (request, response, next) => {
     if (authorization && authorization.startsWith('Bearer ')) {
         request.token = authorization.replace('Bearer ', '')
     }
+
+    next()
+}
+
+const userExtractor = (request, response, next) => {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if (!decodedToken.id) {
+        return response.status(401).json({
+            error: 'invalid token'
+        })
+    }
+
+    request.userId = decodedToken.id
 
     next()
 }
@@ -39,5 +53,6 @@ module.exports = {
     requestLogger,
     unknownEndpoint,
     errorHandler,
-    tokenExtractor
+    tokenExtractor,
+    userExtractor
 }
