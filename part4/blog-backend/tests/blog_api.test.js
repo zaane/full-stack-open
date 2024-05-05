@@ -21,7 +21,7 @@ describe('when there are blogs in database', () => {
             .expect('Content-Type', /application\/json/)
     })
 
-    test('correct number of notes returned', async () => {
+    test('correct number of blogs returned', async () => {
         const response = await api.get('/api/blogs')
         assert.strictEqual(response.body.length, helper.initialBlogs.length)
     })
