@@ -11,6 +11,13 @@ blogsRouter.get('/', async (request, response) => {
     response.json(blogs)
 })
 
+blogsRouter.get('/:id', async (request, response) => {
+    const blog = await Blog
+        .findById(request.params.id)
+        .populate('user', { username: 1, name: 1 })
+    response.json(blog)
+})
+
 blogsRouter.post('/', async (request, response) => {
     const blogRequest = request.body
 
@@ -35,7 +42,22 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-    await Blog.findByIdAndDelete(request.params.id)
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if (!decodedToken.id) {
+        return response.status(401).json({
+            error: 'invalid token'
+        })
+    }
+
+    const blogToDelete = await Blog.findById(request.params.id)
+
+    if (blogToDelete.user.toString() !== decodedToken.id.toString()) {
+        return response.status(401).json({
+            error: 'permission denied'
+        })
+    }
+
+    await Blog.findByIdAndDelete(blogToDelete.id)
     response.status(204).end()
 })
 
