@@ -26,6 +26,8 @@ const userExtractor = (request, response, next) => {
 
     request.userId = decodedToken.id
 
+    console.log(request.userId);
+
     next()
 }
 

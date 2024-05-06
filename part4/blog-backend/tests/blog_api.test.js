@@ -1,4 +1,4 @@
-const { test, after, beforeEach, describe } = require('node:test')
+const { test, after, beforeEach, before, describe } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -7,8 +7,9 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
-describe('when there are blogs in database', () => {
+describe.only('when there are blogs in database', () => {
     beforeEach(async () => {
         await Blog.deleteMany({})
         await Blog.insertMany(helper.initialBlogs)
@@ -26,25 +27,53 @@ describe('when there are blogs in database', () => {
         assert.strictEqual(response.body.length, helper.initialBlogs.length)
     })
 
-    test('all posts have unique identifier named id', async () => {
+    test('all blogs have unique identifier named id', async () => {
         const response = await api.get('/api/blogs')
         const keyLists = response.body.map(blog => Object.keys(blog))
 
         assert(keyLists.every(keyList => keyList.includes('id')))
     })
 
-    describe('adding a new blog', () => {
+    describe.only('adding a new blog', () => {
+
+        let sampleToken = ''
+
+        before(async () => {
+            await User.deleteMany({})
+
+            const sampleUser = {
+                username: "stanley",
+                name: "Stan Lee",
+                password: "spiderman"
+            }
+
+            await api
+                .post('/api/users')
+                .send(sampleUser)
+
+            const response = await api
+                .post('/api/login')
+                .send({
+                    username: sampleUser.username,
+                    password: sampleUser.password
+                })
+
+            sampleToken = response.body.token
+
+        })
+
         test('a valid post can be added', async () => {
             const newBlog = {
                 title: 'my test blog post',
                 author: 'me',
-                url: 'http://url.url.com',
-                likes: 5
+                url: 'http://noLikes.url.com',
+                likes: 17
             }
 
             await api
                 .post('/api/blogs')
                 .send(newBlog)
+                .set({ Authorization: `Bearer ${sampleToken}` })
                 .expect(201)
                 .expect('Content-Type', /application\/json/)
 
@@ -64,6 +93,7 @@ describe('when there are blogs in database', () => {
 
             await api
                 .post('/api/blogs')
+                .set({ Authorization: `Bearer ${sampleToken}` })
                 .send(newBlog)
 
             const blogsAfterPost = await helper.blogsInDatabase()
@@ -81,6 +111,7 @@ describe('when there are blogs in database', () => {
 
             await api
                 .post('/api/blogs')
+                .set({ Authorization: `Bearer ${sampleToken}` })
                 .send(newBlog)
                 .expect(400)
         })
@@ -94,6 +125,7 @@ describe('when there are blogs in database', () => {
 
             await api
                 .post('/api/blogs')
+                .set({ Authorization: `Bearer ${sampleToken}` })
                 .send(newBlog)
                 .expect(400)
         })
@@ -118,7 +150,7 @@ describe('when there are blogs in database', () => {
         test('a blog can be updated', async () => {
             const blogsBeforeUpdate = await helper.blogsInDatabase()
             const blogToUpdate = blogsBeforeUpdate[0]
-            const updatedBlog = {...blogToUpdate, likes: 42}
+            const updatedBlog = { ...blogToUpdate, likes: 42 }
 
             await api
                 .put(`/api/blogs/${blogToUpdate.id}`)
