@@ -34,7 +34,7 @@ describe.only('when there are blogs in database', () => {
         assert(keyLists.every(keyList => keyList.includes('id')))
     })
 
-    describe.only('adding a new blog', () => {
+    describe('adding a new blog', () => {
 
         let sampleToken = ''
 
@@ -62,7 +62,7 @@ describe.only('when there are blogs in database', () => {
 
         })
 
-        test('a valid post can be added', async () => {
+        test('a valid post can be added with a token', async () => {
             const newBlog = {
                 title: 'my test blog post',
                 author: 'me',
@@ -82,6 +82,21 @@ describe.only('when there are blogs in database', () => {
 
             const titles = blogsAfterPost.map(response => response.title)
             assert(titles.includes('my test blog post'))
+        })
+
+        test('a valid post returns 401 without a token', async () => {
+            const newBlog = {
+                title: 'my test blog post',
+                author: 'me',
+                url: 'http://noLikes.url.com',
+                likes: 17
+            }
+
+            await api
+                .post('/api/blogs')
+                .send(newBlog)
+                .expect(401)
+                .expect('Content-Type', /application\/json/)
         })
 
         test('empty likes field defaults to 0', async () => {
@@ -132,9 +147,8 @@ describe.only('when there are blogs in database', () => {
     })
 
     describe('when trying to change the database', () => {
-        test('a blog can be deleted', async () => {
+        test('a blog can be deleted by the user who made it', async () => {
             const blogsBeforeDelete = await helper.blogsInDatabase()
-            const blogToDelete = blogsBeforeDelete[0]
 
             await api
                 .delete(`/api/blogs/${blogToDelete.id}`)
